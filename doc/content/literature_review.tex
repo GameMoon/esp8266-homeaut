@@ -32,5 +32,19 @@
 
 \chapter{Szakirodalmi áttekintés}
 \section{ESP8266}
-Az Espressif cég által gyártott mikrochip, amelyen található egy 32bit-es Tensilica processzor.
+Az Espressif cég által gyártott mikrokontroller, amelyen található egy 32bit-es 80Mhz-es Tensilica processzor, 50kB RAM, egy külső flash chip, ami tárolja a felhasználói programot, illetve különböző perifériák. Emellett tartalmaz egy teljes WiFi stack-et, amely támogatja a 802.11 b/g/n szabványokat. A modulnak két virtuális WiFi interfésze van, amikkel tudja biztosítani, hogy állomásként (station), elérési pontként (softAP) vagy egyszerre mind a két módon üzemeljen. 
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=150mm, keepaspectratio]{figures/esp8266funcdiag.png}
+    \caption{Az ESP8266 funkcionális diagramja}
+    \label{fig:TeXstudio}
+\end{figure}
+
+% különböző modul típusok
+% elérhető lábszám
+% alacsony ár
+% iotban elterjedt, hasonló ellenfele
+% Az előnyeihez sorolható, hogy alacsony fogyasztású és gyorsan tud váltani futó és alvó állapot között.
+
 \section{ESPNOW}
