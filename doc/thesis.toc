@@ -1,7 +1,0 @@
-\select@language {magyar} \contentsline {chapter}{Kivonat}{i}{chapter*.2}% 
-\select@language {english} \contentsline {chapter}{Abstract}{ii}{chapter*.3}% 
-\select@language {magyar} \contentsline {chapter}{Köszönetnyilvánítás}{2}{chapter*.4}% 
-\select@language {magyar} \contentsline {chapter}{Függelék}{3}{appendix*.5}% 
-\select@language {magyar} \contentsline {section}{\numberline {F.1}A TeXstudio felülete}{3}{section.F.1}% 
-\select@language {magyar} \contentsline {section}{\numberline {F.2}Válasz az ,,Élet, a világmindenség, meg minden'' kérdésére}{4}{section.F.2}% 
-\select@language {magyar} \contentsline {chapter}{Irodalomjegyz\'ek}{3}{chapter*.4}% 
