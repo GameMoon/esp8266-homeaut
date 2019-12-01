@@ -11,6 +11,7 @@
 #include "DisplayManager.h"
 #include "Outputs.h"
 #include "TempSensor.h"
+#include "Status.h"
 #include <Ticker.h>
 
 #ifdef USE_ESPNOW
@@ -46,21 +47,19 @@ void setup() {
 		encoder.init();
 	#endif // USE_ENCODER
 
-	Outputs * outputs = new Outputs();
-	TempSensor * temp = new TempSensor();
-
-	dManager.addItem(outputs);
-	dManager.addItem(temp);
-	dManager.addItem(temp);
-	dManager.addItem(outputs);
-	dManager.addItem(outputs);
-
+	dManager.addItem(new Outputs);
+	dManager.addItem(new TempSensor());
+	dManager.addItem(new Status());
+	
+	pinMode(ENCODER_PIN_SWITCH, INPUT);
 }
 
 
 
 // the loop function runs over and over again until power down or reset
 void loop() {
-	dManager.updateMenu();
-	delay(10);
+	//Serial.println(digitalRead(ENCODER_PIN_SWITCH));
+
+	dManager.update();
+	delay(100);
 }

@@ -7,7 +7,9 @@ class TempSensor : public DisplayItem
 		return "Temp";
 	}
 	void draw(Adafruit_SSD1306* display) {
+		
 	}
+	void update(int diff, boolean button) {}
 };
 
 

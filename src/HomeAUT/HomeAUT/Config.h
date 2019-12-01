@@ -8,9 +8,10 @@
 #define USE_DISPLAY
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
+#define SCREEN_TIMEOUT 120
 
 //Encoder
 #define USE_ENCODER
 #define ENCODER_PIN_A 13
 #define ENCODER_PIN_B 12
-#define ENCODER_SWITCH_PIN 14
+#define ENCODER_PIN_SWITCH 14
