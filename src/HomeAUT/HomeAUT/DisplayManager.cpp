@@ -1,15 +1,12 @@
 #include "DisplayManager.h"
 #include "Config.h"
 
-DisplayManager::DisplayManager() {
-	number_of_items = 0;
-}
 
 int DisplayManager::cursor = 0;
-int DisplayManager::number_of_items = 0;
 int DisplayManager::state = DisplayState::Home;
 int DisplayManager::savedState = DisplayState::Home;
-DisplayItem** DisplayManager::items = NULL;
+container<DisplayItem> DisplayManager::items;
+
 DisplayItem* DisplayManager::selected = NULL;
 
 
@@ -46,9 +43,9 @@ void DisplayManager::drawMenu() {
 	display->drawRect(0, 21 * (cursor % 3), 128, 21, SSD1306_WHITE);
 	
 	int scroll_offset = cursor / 3;
-	for (int k = scroll_offset*3; k < number_of_items && k< scroll_offset*3+3; k++) {
+	for (int k = scroll_offset*3; k < items.getSize() && k< scroll_offset*3+3; k++) {
 		display->setCursor(10, k % 3 * 21+3);
-		display->println(items[k]->getName());
+		display->println(items.get(k)->getName());
 	}
 	display->display();
 }
@@ -67,7 +64,7 @@ void DisplayManager::setCursor(int index) {
 		selected->update(cursor-index, false);
 
 	if(state == DisplayState::Menu){
-		if (index >= number_of_items) cursor = number_of_items -1;
+		if (index >= items.getSize()) cursor = items.getSize() -1;
 		else if (index < 0) cursor = 0;
 		else cursor = index;
 	}
@@ -75,20 +72,11 @@ void DisplayManager::setCursor(int index) {
 	start_sleep_timer();
 }
 
-void DisplayManager::addItem(DisplayItem* item) {
-	DisplayItem** temp = new DisplayItem * [number_of_items + 1];
-	memcpy(temp, items, number_of_items*sizeof(DisplayItem*));
-	temp[number_of_items] = item;
-	delete items;
-	items = temp;
-	number_of_items++;
-}
-
 void DisplayManager::enter() {
 	if (state == DisplayState::Sleep) state = savedState;
 	else if (state == DisplayState::Home) state = DisplayState::Menu;
 	else if (state == DisplayState::Menu) {
-		selected = items[cursor];
+		selected = items.get(cursor);
 		state = DisplayState::Selected;
 	}
 	else if (state == DisplayState::Selected) {
@@ -118,6 +106,7 @@ void DisplayManager::start_sleep_timer() {
 }
 
 void DisplayManager::sleep() {
+	if (state == DisplayState::Sleep) return;
 	savedState = state;
 	state = DisplayState::Sleep;
 }

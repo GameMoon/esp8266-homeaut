@@ -4,7 +4,7 @@
 #include "Config.h"
 
 #define BOUNCE_DURATION 30
-#define BACK_DURATION 500
+#define BACK_DURATION 400
 
 class Encoder
 {

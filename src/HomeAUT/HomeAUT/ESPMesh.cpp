@@ -4,16 +4,21 @@ uint8_t ESPMesh::broadcast_mac[] = { 0xFF,0xFF,0xFF,0xFF,0xFF,0xFF };
 //uint8_t ESPMesh::broadcast_mac[] = { 0x1A,0xFE,0x34,0xDF,0x10,0xC8  }; //COM10
 //uint8_t ESPMesh::broadcast_mac[] = { 0x5E,0xCF,0x7F,0x8C,0x0D,0x24 }; //COM8
 
-const uint8_t ESPMesh::MSG_REQUEST_PARENT[COMMAND_SIZE] = { 0x52,0x45,0x51,0x50,0x52,0x54 };
+const uint8_t  ESPMesh::MSG_REQUEST_PARENT[COMMAND_SIZE] = { 0x52,0x45,0x51,0x50,0x52,0x54 };
 const uint8_t  ESPMesh::MSG_ACCEPT_CHILD[COMMAND_SIZE] = { 0x41,0x43,0x50,0x43,0x48,0x44 };
 const uint8_t  ESPMesh::MSG_ACCEPT_PARENT[COMMAND_SIZE] = { 0x41,0x43,0x50,0x50,0x52,0x54 };
+const uint8_t  ESPMesh::MSG_STATUS[COMMAND_SIZE] = { 0x73,0x74,0x61,0x74,0x75,0x73 };
+const uint8_t  ESPMesh::MSG_UPDATE[COMMAND_SIZE] = { 0x75,0x70,0x64,0x61,0x74,0x65 };
 
 uint8_t ESPMesh::connection_tries = 0;
 uint8_t ESPMesh::msg_buffer_size = 0;
 bool ESPMesh::is_parent = false;
+bool ESPMesh::is_root = false;
 uint8_t* ESPMesh::parent = NULL;
 
 ESPMesh::message* ESPMesh::msg_buffer[10];
+container<uint8_t> ESPMesh::peers;
+container<ESPMesh::status_entry> ESPMesh::timeout_table;
 
 void msg_recv_cb(uint8_t* mac_addr, uint8_t* data, uint8_t len) {
 	ESPMesh::addMessage(ESPMesh::parseMessage(data, len));
@@ -22,13 +27,14 @@ void msg_recv_cb(uint8_t* mac_addr, uint8_t* data, uint8_t len) {
 void msg_send_cb(uint8_t* macAddr, uint8_t status) {
 }
 
-ESPMesh::message* ESPMesh::createMessage(uint8_t* to_addr, const uint8_t* command, uint8_t* payload, uint8_t size) {
+ESPMesh::message* ESPMesh::createMessage(uint8_t* next_hop,uint8_t* to_addr, const uint8_t* command, uint8_t* payload, uint8_t size) {
 	message* msg = new message();
 	uint8 src[MAC_SIZE];
 	WiFi.softAPmacAddress(src);
 
 	msg->src = src;
 	msg->dst = to_addr;
+	msg->next_hop = next_hop;
 	msg->command = command;
 	msg->payload = payload;
 	msg->payload_size = size;
@@ -58,7 +64,7 @@ ESPMesh::message* ESPMesh::parseMessage(uint8_t* data, uint8_t size) {
 	return msg;
 }
 
-int ESPMesh::sendMessage(message * msg) {
+int ESPMesh::sendMessage(message * msg, bool delete_after) {
 	uint8_t data_size = 2*MAC_SIZE + COMMAND_SIZE + msg->payload_size;
 	uint8_t* data = new uint8_t[data_size];
 	
@@ -66,10 +72,10 @@ int ESPMesh::sendMessage(message * msg) {
 	memcpy(data + MAC_SIZE, msg->dst, MAC_SIZE);
 	memcpy(data + 2*MAC_SIZE, msg->command, COMMAND_SIZE);
 	memcpy(data + 2*MAC_SIZE + COMMAND_SIZE, msg->payload, msg->payload_size);
+	
+	int result = esp_now_send(msg->next_hop, data, data_size);
 
-	int result = esp_now_send(msg->dst, data, data_size);
-
-	if(result == ESP_OK ) {
+	if(result == ESP_OK && delete_after) {
 		delete msg->payload;
 		delete msg;
 	}
@@ -77,9 +83,14 @@ int ESPMesh::sendMessage(message * msg) {
 	return 0;
 }
 
+void ESPMesh::deleteMessage(message* msg) {
+	delete msg->payload;
+	delete msg;
+}
 
 int ESPMesh::setup_esp_now() {
 	WiFi.mode(WIFI_AP_STA);
+	WiFi.softAP(MESH_PREFIX, MESH_PASSWORD, WIFI_CHANNEL, 1);
 	WiFi.disconnect();
 
 	if (esp_now_init() != ESP_OK) {
@@ -106,7 +117,7 @@ int ESPMesh::setup_esp_now() {
 void ICACHE_RAM_ATTR findParent() {
 	digitalWrite(LED_BUILTIN, !(digitalRead(LED_BUILTIN)));  //Toggle LED Pin
 
-	ESPMesh::sendMessage(ESPMesh::createMessage(ESPMesh::broadcast_mac, ESPMesh::MSG_REQUEST_PARENT));
+	ESPMesh::sendMessage(ESPMesh::createMessage(ESPMesh::broadcast_mac,ESPMesh::broadcast_mac, ESPMesh::MSG_REQUEST_PARENT));
 
 	uint8_t all_con, en_con;
 	esp_now_get_cnt_info(&all_con, &en_con);
@@ -116,9 +127,13 @@ void ICACHE_RAM_ATTR findParent() {
 		ESPMesh::connection_tries++;
 		timer1_write(SEC_DELAY*2); 
 	}
-	else {
+	else if(all_con > 1){
 		ESPMesh::is_parent = true;
-		digitalWrite(LED_BUILTIN, HIGH);
+		digitalWrite(LED_BUILTIN, LOW);
+	}
+	else if (ESPMesh::connection_tries >= 5) {
+		ESPMesh::is_parent = true;
+		ESPMesh::is_root = true;
 	}
 }
 
@@ -142,27 +157,36 @@ ESPMesh::message* ESPMesh::popMessage() {
 	return currentMsg;
 }
 
-void ESPMesh::processMessage() {
-	if (ESPMesh::msg_buffer_size == 0) return;
+void ESPMesh::addPeer(uint8_t* addr) {
+	if (esp_now_is_peer_exist(addr) != 0) return;
 
-	ESPMesh::message* msg = ESPMesh::popMessage();
+	esp_now_add_peer(addr, ESP_NOW_ROLE_COMBO, WIFI_CHANNEL, NULL, 0);
+	peers.add(addr);
 
-	Serial.print("RECV command: ");
-	for (int k = 0; k < COMMAND_SIZE; k++) {
-		Serial.print((char)msg->command[k]);
-	}
+	timeout_table.add(new ESPMesh::status_entry{ peers.get(peers.getSize() - 1),  0 });
+}
+
+void ESPMesh::setParent(uint8_t* addr) {
+	ESPMesh::parent = addr;
+	ESPMesh::addPeer(addr);
+}
+	
+
+void ESPMesh::removePeer(uint8_t* addr) {
+
+	Serial.println("ESPMesh::peer_removed");
+	for (int l = 0; l < MAC_SIZE; l++)  Serial.printf("%02x:", addr[l]);
 	Serial.println();
 
-	if (memcmp(msg->command, ESPMesh::MSG_REQUEST_PARENT, COMMAND_SIZE) == 0 && ESPMesh::is_parent) {
-		ESPMesh::sendMessage(ESPMesh::createMessage(msg->src, ESPMesh::MSG_ACCEPT_CHILD));
+	if (esp_now_is_peer_exist(addr) == 0) return;
+		esp_now_del_peer(addr);
+	
+	for (int k = 0; k < timeout_table.getSize(); k++) {
+		if (memcmp(addr, timeout_table.get(k)->addr, MAC_SIZE) == 0) {
+			timeout_table.delByIndex(k);
+			break;
+		}
 	}
-	if (memcmp(msg->command, ESPMesh::MSG_ACCEPT_CHILD, COMMAND_SIZE) == 0 && ESPMesh::parent == NULL) {
-		ESPMesh::parent = msg->src;
-		esp_now_add_peer(msg->src, ESP_NOW_ROLE_COMBO, WIFI_CHANNEL, NULL, 0);
-		ESPMesh::sendMessage(ESPMesh::createMessage(msg->src, ESPMesh::MSG_ACCEPT_PARENT));
-	}
-	if (memcmp(msg->command, ESPMesh::MSG_ACCEPT_PARENT, COMMAND_SIZE) == 0) {
-		esp_now_add_peer(msg->src, ESP_NOW_ROLE_COMBO, WIFI_CHANNEL, NULL, 0);
-		Serial.println("Child added");
-	}
+	peers.del(addr);
 }
+ 

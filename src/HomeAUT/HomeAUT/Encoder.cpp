@@ -28,10 +28,7 @@ void ICACHE_RAM_ATTR encoder_press() {
 		DisplayManager::enter();
 	}
 
-	Encoder::switch_bounce = millis();
-
-	Serial.printf("Button pressed %d\n", elapsed_time);
-	
+	Encoder::switch_bounce = millis();	
 }
 
 int Encoder::count = 0;

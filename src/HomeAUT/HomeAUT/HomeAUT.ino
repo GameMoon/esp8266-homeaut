@@ -9,9 +9,13 @@
 #include "ESPMesh.h"
 #include "Encoder.h"
 #include "DisplayManager.h"
-#include "Outputs.h"
+#include "NetworkManager.h"
+
+#include "GPIOState.h"
 #include "TempSensor.h"
-#include "Status.h"
+#include "NetworkStatus.h"
+#include "ADC.h"
+
 #include <Ticker.h>
 
 #ifdef USE_ESPNOW
@@ -22,6 +26,8 @@ ESPMesh mesh;
 #ifdef USE_DISPLAY
 DisplayManager dManager;
 #endif
+
+NetworkManager nManager;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
@@ -47,19 +53,28 @@ void setup() {
 		encoder.init();
 	#endif // USE_ENCODER
 
-	dManager.addItem(new Outputs);
-	dManager.addItem(new TempSensor());
-	dManager.addItem(new Status());
+	ADC* adc = new ADC();
+	TempSensor* temp = new TempSensor();
+	GPIOState* gpiostate = new GPIOState();
+
+	nManager.items.add(adc);
+	nManager.items.add(temp);
+	nManager.items.add(gpiostate);
+	DisplayManager::items.add(gpiostate);
+	DisplayManager::items.add(temp);
+	DisplayManager::items.add(new NetworkStatus());
+	DisplayManager::items.add(adc);
 	
 	pinMode(ENCODER_PIN_SWITCH, INPUT);
 }
 
-
-
 // the loop function runs over and over again until power down or reset
 void loop() {
-	//Serial.println(digitalRead(ENCODER_PIN_SWITCH));
-
+	nManager.checkConnections();
+	nManager.processMessage();
+	nManager.sendStatus();
+	#ifdef USE_MQTT
+		nManager.processRoot();
+	#endif // USE_MQTT
 	dManager.update();
-	delay(100);
 }

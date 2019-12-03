@@ -2,7 +2,7 @@
 
 #include "DisplayItem.h"
 
-class Outputs : public DisplayItem
+class GPIO : public DisplayItem
 {
 	int gpio_selector = 0;
 	boolean activate = false;
