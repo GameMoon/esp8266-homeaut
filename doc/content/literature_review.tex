@@ -26,9 +26,9 @@
 % Hasonló rendszerek
 % https://esphome.io/
 % https://www.openhab.org/
+% Kész termékek
+% https://www.itead.cc/sonoff-pow.html
 
-% Smarthome rendszerek előnyei hátrányi, hol lehetne őket használi
-% pl. idősek felügyelete
 
 \chapter{Szakirodalmi áttekintés}
 \section{ESP8266}
@@ -41,10 +41,31 @@ Az Espressif cég által gyártott mikrokontroller, amelyen található egy 32bi
     \label{fig:TeXstudio}
 \end{figure}
 
+A ESP8266-hoz léteznek különböző típusú moduljai (pl. ESP-01, ESP-12), amelyek általában a panelre kivezetett GPIO számban térnek el főleg. Összesen 17 db GPIO láb áll rendelkezésre, amikhez különböző funkciók rendelhetők.
+Az IoT rendszerekben elterjedten használják, ami elsősorban az alacsony árának és a vele kompatibilis számos fejlesztői környezetnek (pl. Arduino, VStudio) is köszönhető. A gyártó alapvetően 3 különböző SDK-t biztosít a fejlesztéshez. Az Arduino core-t, NONOS SDK-t, illetve a RTOS SDK-t, ami FreeRTOS alapú.
+
+Számos versenytársa létezik például a RTL8710, AIR602 amik eltérő processzort használnak, de teljesítményben és fogyasztásban nincs nagy eltérés. Ezenkívűl létezik már az ESP-nek egy újabb verziója az ESP32, ami már 2-magos processzorral, nagyobb memóriával és több perifáriával rendelkezik.
+
+% http://wiki.seeedstudio.com/W600_Module/
 % különböző modul típusok
 % elérhető lábszám
 % alacsony ár
-% iotban elterjedt, hasonló ellenfele
-% Az előnyeihez sorolható, hogy alacsony fogyasztású és gyorsan tud váltani futó és alvó állapot között.
+% miben lehet rá fejleszteni
+% iotban elterjedt, hasonló ellenfele RTL8710
+
 
 \section{ESPNOW}
+Az ESPNOW egy kommunikációs protokoll, ami WiFi-hez hasonlóan a 802.11-es szabvány alapján működik. Az egyik eltérés a WiFi-hez képest, hogy nincs külön kapcsolat felépítés az eszközök között. Ennek köszönhetően kevesebb az overhead a kommunikáció során, ezzel is gyorsítva azt.
+
+A fizikai és hozzáférési réteg felett a gyártó által definiált egyedi frame található. A frame tartalmaz egy Body mezőt, ami tartalmazhatja a saját alkalmazásunk payload-ját. Ennek a mérete 0-250 byte között változhat. A frame ezenkívűl tartalmaz még különböző a gyártó által használt mezőt, mint pl ESPNOW verziószámát, egyedi azonosítót ami az adott ESP MAC címének első 3 byte-ból áll.
+
+Kommunikációhoz az ESP-kt először összekell párosítani, ehhez szükséges megadni a másik modul MAC címét. Egy modul maximum 20 másik eszközzel lehet összepárosítva. Lehetőség van broadcast üzenet küldésére, ehhez a FF:FF:FF:FF:FF:FF címet is hozzá kell adni a párosított eszközök közé.
+
+% nincs külön kapcsolat két eszköz között
+% custom frame format
+% sikeres küldés esetén ack, TODO mérni kellene
+% https://docs.espressif.com/projects/esp-idf/en/latest/api-reference/network/esp_now.html
+
+\section{MQTT}
+\section{NodeRED}
+% https://ieeexplore.ieee.org/document/8603575
