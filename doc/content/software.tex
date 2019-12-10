@@ -12,7 +12,7 @@ Az alapértelmezett kommunikáció az egység közök ESPNOW használatával tö
 		\toprule
 		Küldő MAC címe & Cél MAC címe & Parancs & Adat \\
 		\midrule
-        8 byte & 8 byte & 6 byte & 0 - 233 byte \\
+        8 bájt & 8 bájt & 6 bájt & 0 - 233 bájt \\
 	\end{tabular}
 	\caption{Üzenet felépítése}
 	\label{tab:TabularExample}
@@ -36,7 +36,7 @@ Ezt a parancsot az egyes eszközök periodikusan küldik a hozzájuk kapcsolódo
 		\toprule
 		Periféria típus & Perféria azonosító & Érték \\
 		\midrule
-        1 byte & 1 byte & 4 byte \\
+        1 bájt & 1 bájt & 4 bájt \\
 	\end{tabular}
 	\caption{Formátum az adatmezőben}
 	\label{tab:TabularExample}
@@ -68,4 +68,6 @@ A hálózat felépítése során fontos, hogy egy csomópontra csak akkor lehess
 
 Egy egység kiesésének detektálás időtúllépéssel detektálható. Minden egység tárol a hozzá kapcsolódott eszközökhöz egy időtúllépési számlálót, amiknek az értékeit periódikusan növeli. STATUS üzenet érkezése esetén az adott számlálót 0-ra állítja. A számlaló ha elér egy megadott értéket, akkor törli az egységet a táblájából. Az olyan esetekben, amikor a törölt egység megegyezik a szülő egységgel, akkor ismét elkezdi a szülő keresési lépést.
 
-\subsection{Szenzorok}
+
+\subsection{Titkosítás}
+\subsection{GUI rendszer}
