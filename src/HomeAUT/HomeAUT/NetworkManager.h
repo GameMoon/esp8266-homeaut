@@ -14,6 +14,8 @@ class NetworkManager
 	static int elapsed_time;
 	static int timeout_elapsed_time;
 
+
+
 	uint8_t getStatusPayloadSize();
 	int root_state;
 	PubSubClient * mqtt_client;
@@ -26,6 +28,7 @@ class NetworkManager
 	void processStatusPayload();
 	static uint8_t* own_addr;
 public:
+
 	NetworkManager();
 	~NetworkManager();
 	static container<NetworkItem> items;
@@ -35,5 +38,6 @@ public:
 	void processMessage();
 	void processRoot();
 
+	static int testCounter;
 };
 

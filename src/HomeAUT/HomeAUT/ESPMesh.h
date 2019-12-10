@@ -28,6 +28,7 @@ public:
 	};
 	
 	static message* msg_buffer[];
+	//static container<message> msg_buffer;
 	static uint8_t msg_buffer_size;
 
 	static uint8_t broadcast_mac[];
@@ -35,6 +36,7 @@ public:
 	static boolean is_parent;
 	static boolean is_root;
 	static uint8_t* parent;
+	static boolean is_sending;
 
 	static container<uint8_t> peers;
 	static container<ESPMesh::status_entry> timeout_table;
@@ -44,6 +46,8 @@ public:
 	static const uint8_t MSG_ACCEPT_PARENT[];
 	static const uint8_t MSG_STATUS[];
 	static const uint8_t MSG_UPDATE[];
+	static const uint8_t MSG_TEST[];
+	
 
 	static ESPMesh::message* createMessage(uint8_t* next_hop, uint8_t* to_addr, const uint8_t* command, uint8_t* payload = nullptr, uint8_t size = 0);
 	static ESPMesh::message* parseMessage(uint8_t* data, uint8_t size);

@@ -16,6 +16,8 @@
 #include "NetworkStatus.h"
 #include "ADC.h"
 
+#include "Test.h"
+
 #include <Ticker.h>
 
 #ifdef USE_ESPNOW
@@ -64,12 +66,14 @@ void setup() {
 	DisplayManager::items.add(temp);
 	DisplayManager::items.add(new NetworkStatus());
 	DisplayManager::items.add(adc);
+	DisplayManager::items.add(new Test());
 	
 	pinMode(ENCODER_PIN_SWITCH, INPUT);
 }
 
 // the loop function runs over and over again until power down or reset
 void loop() {
+	//Encoder::update();
 	nManager.checkConnections();
 	nManager.processMessage();
 	nManager.sendStatus();

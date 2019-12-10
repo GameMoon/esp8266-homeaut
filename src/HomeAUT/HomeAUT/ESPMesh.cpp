@@ -9,13 +9,16 @@ const uint8_t  ESPMesh::MSG_ACCEPT_CHILD[COMMAND_SIZE] = { 0x41,0x43,0x50,0x43,0
 const uint8_t  ESPMesh::MSG_ACCEPT_PARENT[COMMAND_SIZE] = { 0x41,0x43,0x50,0x50,0x52,0x54 };
 const uint8_t  ESPMesh::MSG_STATUS[COMMAND_SIZE] = { 0x73,0x74,0x61,0x74,0x75,0x73 };
 const uint8_t  ESPMesh::MSG_UPDATE[COMMAND_SIZE] = { 0x75,0x70,0x64,0x61,0x74,0x65 };
+const uint8_t  ESPMesh::MSG_TEST[COMMAND_SIZE] = { 0x74,0x65,0x73,0x74,0x65,0x6b };
 
 uint8_t ESPMesh::connection_tries = 0;
 uint8_t ESPMesh::msg_buffer_size = 0;
 bool ESPMesh::is_parent = false;
 bool ESPMesh::is_root = false;
 uint8_t* ESPMesh::parent = NULL;
+bool ESPMesh::is_sending = false;
 
+//container<ESPMesh::message> ESPMesh::msg_buffer;
 ESPMesh::message* ESPMesh::msg_buffer[10];
 container<uint8_t> ESPMesh::peers;
 container<ESPMesh::status_entry> ESPMesh::timeout_table;
@@ -25,6 +28,9 @@ void msg_recv_cb(uint8_t* mac_addr, uint8_t* data, uint8_t len) {
 }
 
 void msg_send_cb(uint8_t* macAddr, uint8_t status) {
+	
+		ESPMesh::is_sending = false;
+	
 }
 
 ESPMesh::message* ESPMesh::createMessage(uint8_t* next_hop,uint8_t* to_addr, const uint8_t* command, uint8_t* payload, uint8_t size) {
@@ -73,6 +79,7 @@ int ESPMesh::sendMessage(message * msg, bool delete_after) {
 	memcpy(data + 2*MAC_SIZE, msg->command, COMMAND_SIZE);
 	memcpy(data + 2*MAC_SIZE + COMMAND_SIZE, msg->payload, msg->payload_size);
 	
+	is_sending = true;
 	int result = esp_now_send(msg->next_hop, data, data_size);
 
 	if(result == ESP_OK && delete_after) {
@@ -80,7 +87,7 @@ int ESPMesh::sendMessage(message * msg, bool delete_after) {
 		delete msg;
 	}
 	delete data;
-	return 0;
+	return result;
 }
 
 void ESPMesh::deleteMessage(message* msg) {
@@ -145,6 +152,7 @@ void ESPMesh::setup_connection() {
 }
 
 void ESPMesh::addMessage(message* msg) {
+	//msg_buffer.add(msg);
 	ESPMesh::msg_buffer[ESPMesh::msg_buffer_size] = msg;
 	ESPMesh::msg_buffer_size++;
 }
@@ -155,6 +163,7 @@ ESPMesh::message* ESPMesh::popMessage() {
 	ESPMesh::msg_buffer_size--;
 	memmove(msg_buffer + 1, msg_buffer, ESPMesh::msg_buffer_size);
 	return currentMsg;
+	//return msg_buffer.get(0);
 }
 
 void ESPMesh::addPeer(uint8_t* addr) {

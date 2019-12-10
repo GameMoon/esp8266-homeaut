@@ -3,6 +3,9 @@
 container<NetworkItem> NetworkManager::items;
 int NetworkManager::elapsed_time = 0;
 int NetworkManager::timeout_elapsed_time = 0;
+
+int NetworkManager::testCounter = 0;
+
 uint8_t* NetworkManager::own_addr = NULL;
 
 NetworkManager::NetworkManager() {
@@ -63,6 +66,7 @@ void NetworkManager::sendToPeers(ESPMesh::message * msg,uint8* exclude_addr) {
 
 void NetworkManager::processMessage() {
 	if (ESPMesh::msg_buffer_size == 0) return;
+	//if (ESPMesh::msg_buffer.getSize() == 0) return;
 
 	ESPMesh::message* msg = ESPMesh::popMessage();
 
@@ -100,8 +104,8 @@ void NetworkManager::processMessage() {
 		//forwardMessage(msg); // forward message, if not came from parent
 	
 	}
-	else if (memcmp(msg->command, ESPMesh::MSG_UPDATE, COMMAND_SIZE) == 0) { // update
-		
+	else if (memcmp(msg->command, ESPMesh::MSG_TEST, COMMAND_SIZE) == 0) { // update
+		testCounter++;
 	}
 }
 

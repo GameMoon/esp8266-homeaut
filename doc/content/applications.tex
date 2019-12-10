@@ -1,0 +1,31 @@
+\section{Alkalmazások}
+
+A kapcsolási rajz és a nyáktervezés során fontos szempontok voltak, hogy univerzális legyen az áramkör és könnyen lehessen integrálni már meglévő megoldásokkal. A különböző alakalmazások során felmerülő igények érdekében ugyanaz az áramkör használható a felhasználói oldalon az irányításhoz, mint például a beavatkazó oldalon. Ez azért valósítható meg, mert elegendő néhány alapvető elemen kívűl csak a használathoz specifikus alkatrészek beültetése.
+A következőkben lehetséges konfigurációkat mutatok be, illetve hogy az adott konfigurációkat milyen alkalmazások tudják használni.
+
+\subsection{Elérhető perifériák}
+Az áramkörön az alábbi szenzorok, illetve egyéb perifériák érhetőek el. Ezek különböző kombinációja alkot egy konfigurációt. A listában zárójelben látható, hogy az adott eszköz használatához milyen és hány darab elérhető csatlakoztatási pontra van szükség. Néhány eszköz esetében számít sebesség, ezért csak direktbe lehet kötni
+\begin{itemize}
+    \item 7 db GPIO láb
+    \item 1 db 16 bites shift regiszter ( 16 db be vagy kimenet)
+    \item 1 db 8 bites párhuzamos kimenetnel rendelkező shift regiszter ( 3db kimenet )
+    \item 1 db 8 bites párhuzamos bemenettel rendelkező shift regiszter ( 3db kimenet )
+    \item OLED kijelző ( I2C )
+    \item Enkóder nyomógombbal ( 3 db bemenet )
+    \item 6 db N csatornás MOSFET-tel vezérelt meghajtó ( 6 db kimenet)
+    \item 2 db P csatornás MOSFET-tel vezérelt meghajtó ( 2 db kimenet)
+    \item IR Adó / Vevő ( 1 db kimenet, 1 db bemenet)
+    \item Mozgásérzékelő ( 1 db bemenet)
+    \item Optokapuk ( 2db kimenet )
+    \item Hőmérséklet szenzor ( I2C )
+    \item ADC ( 1 db analóg bemenet )
+    \item 7 szegmenses kijelző modul ( 2 db kimenet )
+    \item RGB LED ( 1 db kimenet )
+    \item Normál LED ( 1 db kimenet )
+\end{itemize}
+
+A lista alapján összeállítható egy táblázat, amelyről könnyen leolvasható milyen lehetséges konfigurációkat tudunk egyszerre használni.
+
+\subsection{Konfigurációk}
+
+\subsection{Példa alkalmazások}

@@ -24,7 +24,7 @@
 #define ROOT_WIFI_PASSWORD "Valami12"
 
 //MQTT
-#define USE_MQTT
+//#define USE_MQTT
 #define MQTT_SERVER "farmer.cloudmqtt.com"
 #define MQTT_PORT 11855
 #define MQTT_USER "bzqikjef"
