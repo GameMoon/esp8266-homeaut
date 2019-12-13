@@ -1,6 +1,15 @@
 \section{Szoftver}
 
-A szoftver az áramkörhöz hasonlóan többi opcionálisan használható elemből épül fel. A felhasznalónak lehetősége egy konfigurációs fájlban megadnia, hogy mely elemeket szeretné használni. Ilyen beállítható érték például az ESPNOW hálózat, MQTT használata, de ide tartozik a kijelző és az enkóder jelenléte is. Lehetőség van már meglévő szoftvereket is használni, mint például a ESPHome-t. Ez szintén egy konfig fájl alapján állítja elő az eszközre feltölthető kódot.
+A szoftver az áramkörhöz hasonlóan több opcionálisan használható elemből épül fel. A felhasznalónak lehetősége egy konfigurációs fájlban megadnia, hogy mely elemeket szeretné használni. Ilyen beállítható érték például az ESPNOW hálózat, MQTT használata, de ide tartozik a kijelző és az enkóder jelenléte is. 
+
+Az ESPNOW hálózat használata egy olyan plusz lehetőséget biztosít, hogy több egység használata esetén automatikusan létrehozza és karbantartja a közöttük lévő a kapcsolatokat. A hálózat továbbá összekapcsolható már meglévő WiFi hozzáférési ponttal is. Hozzáférési ponthoz kapcsolódva lehetőség van más gyártó eszközeivel kommunikálni, illetve így lehet elérhetővé tenni az internet felé is a rendszert.
+
+Lehetőség van már meglévő rendszerek által biztosított szoftvereket is használni, ilyen például a ESPHome. Ezekben az esetekben általában egy konfig fájlban kell külön megadni, hogy melyik lábra milyen eszköz van csatlakoztatva.
+
+
+\subsection{Modulok illesztése}
+A panel univerzális felhasználhatósága érdékeben, fontos szempont volt, hogy az egységhez kapcsolt modulokat szoftveresen is könnyen lehessen integrálni. Rendelkezésre áll ennek érdekében egy keretrendszer, ami tartalmazza többek közt a hálózat menedzseléset, eszközök értékeinek frissítését, illetve egy megjelenítési felületet is.
+Új típúsú modul csatlakoztatása esetén létre kell hozni először egy saját osztályt, aminek belehet állítani különböző ősosztályokat. Az ősosztályok virtuális függvényeinek felülírásával lehet például a modul által kiküldeni kívánt értékét beállítani vagy megjelenítést beállítani.
 
 \subsection{Üzenetek}
 Az alapértelmezett kommunikáció az egység közök ESPNOW használatával történik. A protokoll biztosít az átküldendő keretekben egy 0-250 byte méretű payload-ot, ahova a felhasználó tudja az átküldendő adatot elhelyezni. Az általam definiált csomag tartalmazza mindig a küldő és fogadó fel azonosítóját, hogy köztes egységek tudják hogyan kell továbbítani, illetve egy parancsot. Ezt követhet egy adat mező, ami a parancsnak megfelelő értékeket tartalmazza.
@@ -39,7 +48,7 @@ Ezt a parancsot az egyes eszközök periodikusan küldik a hozzájuk kapcsolódo
         1 bájt & 1 bájt & 4 bájt \\
 	\end{tabular}
 	\caption{Formátum az adatmezőben}
-	\label{tab:TabularExample}
+	\label{tab:network_data_format}
 \end{table}
 
 \subsubsection{UPDATE}
@@ -52,7 +61,7 @@ A hálózat tesztelése érdekében használt csomag, amit az egységek visszak�
 A hálózatban két különböző típusú csomópontot lehet megkülönböztetni. Az egyik a gyökér csomópont, illetve a normál csomópont. Mind a két típusú egység rendelkezik egy beállítható szülő flag-el, ami ha igaz értékre van állítva, akkor válaszolhat az újonnan érkező kapcsolódni kívánó egységeknek.
 
 \subsubsection{Gyökér csomópont}
-A hálózat felépítése ezek segítségével kezdődik. Ilyen egység akkor keletkezik, ha az adott csomópont többszöri REQUEST\_PARENT üzenet küldése után sem kap választ. Ebben az esetben kinevezi magát kezdő csomópontnak és beállítja szülő flag-et, ezzel is jelezve, hogy hozzá már lehet kapcsolódni. Ezeknek a csomópontoknak olyan további különleges tulajdonságuk is van, hogy ők tudnak kommunikálni a külvilággal, feltéve ha a konfigurációs fájlban engedélyezve van az MQTT használata. Az ide beérkező STATUS üzeneteket átalakítják MQTT-ben használt topikokká majd ezeket publikálják. Az általuk publikát topikokra fel is vannak iratkozva, ezért módosítás esetén ők alakítják vissza a Brooker-től érkező infromációkat UPDATE üzenetekké majd továbbítják hálózatukon.
+A hálózat felépítése ezek segítségével kezdődik. Ilyen egység akkor keletkezik, ha az adott csomópont többszöri REQUEST\_PARENT üzenet küldése után sem kap választ. Ebben az esetben kinevezi magát kezdő csomópontnak és beállítja szülő flag-et, ezzel is jelezve, hogy hozzá már lehet kapcsolódni. Ezeknek a csomópontoknak olyan további különleges tulajdonságuk is van, hogy ők tudnak kommunikálni a külvilággal, feltéve ha a konfigurációs fájlban engedélyezve van az MQTT használata. Az ide beérkező STATUS üzeneteket átalakítják MQTT-ben használt topikokká majd ezeket publikálják. Az általuk publikát topikokra fel is vannak iratkozva, ezért módosítás esetén ők alakítják vissza a Broker-től érkező infromációkat UPDATE üzenetekké majd továbbítják hálózatukon.
 
 \subsubsection{Normál csomópont}
 A normál csomópont akkor keletkezik, ha egy egység sikeresen rákapcsolódik egy a gyökér vagy egy másik csomópontra, ami szülőként is funkciónal. Sikeres kapcsolódás után engedélyezheti, hogy ő rá is lehessen kapcsolódni.
@@ -60,14 +69,15 @@ A normál csomópont akkor keletkezik, ha egy egység sikeresen rákapcsolódik 
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=150mm, keepaspectratio]{figures/mesh.png}
-    \caption{A hálózat felépítése}
-    \label{fig:TeXstudio}
+    \caption{A hálózat felépítése  }
+    \label{fig:mesh_network}
 \end{figure}
+
 
 A hálózat felépítése során fontos, hogy egy csomópontra csak akkor lehessen csatlakozni, ha már ő is csatlakoztatva van valakihez ( kivétel a gyökér egység ). Ellenkező esetben létre jöhet olyan hálozat, ami nem tud a külvilággal kommunikálni. A másik fontos tulajdonság, hogy egy egységnek csak egy szülője lehet, hogy ne alaklujanak ki hurkok, ahol az üzenetek végtelenségig keringenének. Az utóbbi esetet egyébként egy plusz TTL paraméter bevezetésével kilehetne küszöbölni. A feltételek betartása esetében a hálózatnak végül egy fa struktúrája lesz.
 
-Egy egység kiesésének detektálás időtúllépéssel detektálható. Minden egység tárol a hozzá kapcsolódott eszközökhöz egy időtúllépési számlálót, amiknek az értékeit periódikusan növeli. STATUS üzenet érkezése esetén az adott számlálót 0-ra állítja. A számlaló ha elér egy megadott értéket, akkor törli az egységet a táblájából. Az olyan esetekben, amikor a törölt egység megegyezik a szülő egységgel, akkor ismét elkezdi a szülő keresési lépést.
-
+Az egységek meghibásodásának detektálása időtúllépéssel segítségével történik. Minden egység tárol a hozzá kapcsolódott eszközökhöz egy időtúllépési számlálót, amiknek az értékeit periódikusan növeli. STATUS üzenet érkezése esetén az adott számlálót 0-ra állítja. A számlaló ha elér egy megadott értéket, akkor törli az egységet a táblájából. Az olyan esetekben, amikor a törölt egység megegyezik a szülő egységgel, akkor ismét elkezdi a szülő keresési lépést.
 
 \subsection{Titkosítás}
-\subsection{GUI rendszer}
+Az egységek kommunikációjának titkosítására nem a beépített AES alapú algoritmus lett haszálva, hanem a felhasznált technológiáknál említett ChaCha szimmetrikus kulcsú rejtjelező. A jelenlegi verzióban a kulcsok nem kerülnek átküldésre a hálózaton, hanem az egységek flashmemóriájába vannak eltárolva egy konfig fájl részeként. Az eltárolt konfig fájlt a rendszer induláskor tölti be SPIFFS használatával és ez alapján inicializálja a változókat.
+A rendszer a kiküldendő üzenet adatcsomagját titkosítja és ez kerül továbbításra a hálózatra. A eszközök az üzenet feldolgozását a tikosítás feloldásával kezdik és azután tudnak további döntést hozni, hogy nekik jött-e az üzenet vagy továbbítani szükséges. Utóbbi esetben újracsomagolás helyett, a memóriában lévő beérkező titkosított üzenetet továbbítja.
