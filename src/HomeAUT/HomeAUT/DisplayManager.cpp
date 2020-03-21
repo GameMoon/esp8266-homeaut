@@ -1,6 +1,6 @@
 #include "DisplayManager.h"
 #include "Config.h"
-
+#include "Clock.h"
 
 int DisplayManager::cursor = 0;
 int DisplayManager::state = DisplayState::Home;
@@ -55,7 +55,7 @@ void DisplayManager::drawHome() {
 	display->setTextSize(2); // Draw 2X-scale text
 	display->setTextColor(SSD1306_WHITE);
 	display->setCursor(0, 20);
-	display->println(F("Home"));
+	display->println(Clock::getTime());
 	display->display();
 }
 

@@ -15,6 +15,8 @@
 #include "TempSensor.h"
 #include "NetworkStatus.h"
 #include "ADC.h"
+#include "Thermostat.h"
+#include "Clock.h"
 
 #include "Test.h"
 
@@ -58,14 +60,18 @@ void setup() {
 	ADC* adc = new ADC();
 	TempSensor* temp = new TempSensor();
 	GPIOState* gpiostate = new GPIOState();
+	
 
 	nManager.items.add(adc);
 	nManager.items.add(temp);
 	nManager.items.add(gpiostate);
-	DisplayManager::items.add(gpiostate);
-	DisplayManager::items.add(temp);
+	//DisplayManager::items.add(gpiostate);
+	//DisplayManager::items.add(temp);
+	DisplayManager::items.add(new Thermostat(temp));
 	DisplayManager::items.add(new NetworkStatus());
-	DisplayManager::items.add(adc);
+	DisplayManager::items.add(new Clock());
+
+	//DisplayManager::items.add(adc);
 	DisplayManager::items.add(new Test());
 	
 	pinMode(ENCODER_PIN_SWITCH, INPUT);

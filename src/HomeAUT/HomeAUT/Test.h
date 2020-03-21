@@ -22,9 +22,16 @@ class Test : public DisplayItem {
 		display->clearDisplay();
 		display->setCursor(0, 0);
 		display->setTextSize(1);
+		
+		if(testMode < 0){
+			display->printf("sleep");
+			display->display();
+			return;
+		}
 
 		display->printf("No. Packet: %d\n", numberOfPacket);
 		display->printf("Size of Packet: %d\n", sizeOfPacket);
+
 
 		if (activate) {
 			display->println("Sending");
@@ -58,7 +65,9 @@ class Test : public DisplayItem {
 
 	void update(int diff, boolean button){
 		testMode -= diff;
-	
+
+		if (button && testMode < 0) ESP.deepSleep(0);
+
 		if (testMode % 3 == 0) {
 			numberOfPacket = 10*pow10(testMode / 3);
 			sizeOfPacket = 10;

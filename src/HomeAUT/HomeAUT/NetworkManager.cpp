@@ -42,6 +42,8 @@ uint8_t NetworkManager::getStatusPayloadSize() {
 void NetworkManager::sendStatus() {
 	if (millis() - elapsed_time < STATUS_REPORT_PERIOD) return;
 	else elapsed_time = millis();
+	
+	Serial.println("Send status");
 
 	ESPMesh::message * msg = ESPMesh::createMessage(NULL,NULL, ESPMesh::MSG_STATUS, createStatusPayload(),getStatusPayloadSize());
 	if (ESPMesh::is_root) sendMQTT(msg);

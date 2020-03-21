@@ -116,7 +116,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\HomeAUT;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\libraries\ESP8266WiFi\src;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\libraries\SPI;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\libraries\Wire;$(ProjectDir)..\..\..\..\..\Arduino\libraries\Adafruit_GFX_Library;$(ProjectDir)..\..\..\..\..\Arduino\libraries\Adafruit_SSD1306;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\libraries\Ticker;$(ProjectDir)..\..\..\..\..\Arduino\libraries\PubSubClient\src;$(ProjectDir)..\..\..\..\..\Arduino\libraries\I2C_Temperature_Sensors_derived_from_the_LM75\src;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266\avr;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266\libb64;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266\spiffs;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266\umm_malloc;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\variants\generic;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\sdk\include;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\sdk\lwip2\include;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\sdk\libc\xtensa-lx106-elf\include;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\xtensa-lx106-elf\include\c++\4.8.2;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\xtensa-lx106-elf\include\c++\4.8.2\xtensa-lx106-elf;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\xtensa-lx106-elf\include;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\lib\gcc\xtensa-lx106-elf\4.8.2\include;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\sdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\HomeAUT;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\libraries\Ticker;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266\avr;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266\libb64;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266\spiffs;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\cores\esp8266\umm_malloc;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\variants\generic;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\sdk\include;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\sdk\lwip2\include;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\sdk\libc\xtensa-lx106-elf\include;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\xtensa-lx106-elf\include\c++\4.8.2;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\xtensa-lx106-elf\include\c++\4.8.2\xtensa-lx106-elf;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\xtensa-lx106-elf\include;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\xtensa-lx106-elf\lib\gcc\xtensa-lx106-elf\4.8.2\include;$(ProjectDir)..\..\..\..\..\Arduino\hardware\esp8266com\esp8266\tools\sdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ProjectDir)__vm\.HomeAUT.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <PreprocessorDefinitions>__ESP8266_esp8266__;__ESP8266_ESP8266__;_VMDEBUG=1;__ets__;ICACHE_FLASH;NONOSDK22x_191024=1;F_CPU=80000000L;LWIP_OPEN_SRC;TCP_MSS=536;LWIP_FEATURES=1;LWIP_IPV6=0;ARDUINO=108010;ARDUINO_ESP8266_GENERIC;ARDUINO_ARCH_ESP8266;LED_BUILTIN=2;FLASHMODE_DOUT;ESP8266;__cplusplus=201103L;_VMICRO_INTELLISENSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -138,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ADC.h" />
+    <ClInclude Include="Clock.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="container.h" />
     <ClInclude Include="DisplayItem.h" />
@@ -150,10 +151,12 @@
     <ClInclude Include="NetworkStatus.h" />
     <ClInclude Include="TempSensor.h" />
     <ClInclude Include="Test.h" />
+    <ClInclude Include="Thermostat.h" />
     <ClInclude Include="__vm\.HomeAUT.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ADC.cpp" />
+    <ClCompile Include="Clock.cpp" />
     <ClCompile Include="container.cpp" />
     <ClCompile Include="DisplayItem.cpp" />
     <ClCompile Include="DisplayManager.cpp" />
@@ -163,6 +166,7 @@
     <ClCompile Include="GPIOState.cpp" />
     <ClCompile Include="NetworkStatus.cpp" />
     <ClCompile Include="TempSensor.cpp" />
+    <ClCompile Include="Thermostat.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
