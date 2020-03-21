@@ -1,2 +1,17 @@
 \chapter{Összefoglalás}
+
+A dolgozat során sikerült létrehozni egy olyan áramkört, amelynek sikerült teljesíteni a tervezésnél meghatározott kompatibilitási alapelvet. A \ref{tab:applications} táblázat segítségével könnyen lehet új konfigurációkat létrehozni. Az áramkör végső mérete a sokféle csatlakoztható modul ellenére, viszonylag kisméretű maradt. Sokféle konfigurációs lehetsőgnek köszönhetően rendkívűl sok alkalmazás megvalósítható.
+
+A megvalósított szoftveres keretrendszer használatával új modulok felvitele könnyen megoldható. Egyszerűen lehet saját felhasználói felületet létrehozni a képernyőhöz egy modulnak.A szenzorok értékek küldése is néhány függvény hívással megoldható és könnyen megadható a kimeneti formátuma a szenzor értékének.
+
+A létrejött hálózatban az egységek kommunikációja egészen stabilan működött, viszont a mérések során tapasztalt átviteli sebesség elmaradt a mások által mért értékektől. A tikosítási kulcsok flashben való tárolás pedig nem igazán nyújt teljes védelmet.
+
+Az ESPNOW használta során sokszor előfordult, hogy a gyártó által kiadott információk hiányosak, illetve nem pontosak. Az ESPNOW és WiFi egyszerre való használhatóságáról nincs említés, csak a gyártó oldalon található fórumkból deríthető ki, hogy működőképes az elgondolás.
+
 \section{Jövőbeli tervek}
+
+Jövőbeli tervek között szerepel mindenképpen a jelenlegi panel hibáinak kijavítása. Az egyik ilyen hiba a középső csatlakozási pontok egymáshoz képesti túl kicsi távolsága. Az enkóder sok alkalmazásban történő használata, miatt nem vezetékekkel lehetne csatlakoztatni, hanem elegendő lenne néhány forrszem beforrasztása. A hőmérséklet szenzort szintén cserélni szükséges, mivel a jelenlegi nagyjából állandóan +2 Celsisus fokot mutatott a valósághoz képest.
+
+A szoftver oldalon főleg a hálózaton lehetne fejleszteni. Fix WiFi csatorna helyet, az ESP-k alkalmazkodnának a hozzáférési ponthoz. A titkosított kulcsok létrehozásának és tárolásának módosítása.
+
+Tervben van továbbá az újabb verziójú ESP32 használata. Az egyik előnye a nagyobb számítási kapacitás, és ezzel már megoldható lenne kamera kép megfelelő sebességű átvitele az egységek között, és így ki lehetne váltani például a jelenleg használt IP kamerákat. További előnye az új modulnak, hogy több elérhető GPIO lába van, ezért nem feltétlen szükséges a shift regiszterek alkalmazása.

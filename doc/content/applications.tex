@@ -88,8 +88,15 @@ Energiamegtakarítás szempontjából használhatók az egységek mint intellige
 
 \section{Termosztát alkalmazás}
 
-Az általam megvalósított termosztát vezérlő, a példa alkalmazásoknál említett vezérlő egyszerűsített változata lett. Az áramkörön a beépített kijelzőn, enkóderen és a hőmérséklet szenzoron kívűl egy külsőleg csatlakoztatott RTC modul lett felhasználva. A egységen belehet állítani az aktuális hőmérsékletet, illetve külön definiálható idő intervallumokban is. A fűtés kapcsolása egy távoli egység kimenetének módosításával tudja szabályozni.
+Az általam fizikaliag is megvalósított alkalmazás egy termosztát vezérlő volt, a példa alkalmazásoknál említett vezérlőhöz hasonló, de annál egyszerúsítettebb változata lett. A panelon a beépített kijelzőn, enkóderen és a hőmérséklet szenzoron kívűl egy külsőleg csatlakoztatott RTC modul lett pluszban felhasználva, ami a plusz I2C csatlakozón kereszül kapcsolódik. A egységen belehet állítani az aktuális hőmérsékletet, illetve külön definiálható ez az érték válaszható idő intervallumokban is. A fűtés rendszer kapcsolgatásást egy távoli egység kimenetének módosításával lehet szabályozni.
 
-Az alkalmazás alapját egy 4 állapottal rendelkező állapotgép biztosítja. Induláskor egy kezdőképernyő fogadja a felhasználót, amin az aktuális idő jelenik meg. Az enkóder rövid lenyomásával tudunk előre, a hosszú megnyomásával pedig visszafele lépkedni az állapotok között. A második állapotban egy menü jelenik meg, ahol az egységhez kapcsolt hőmérő, illetve RTC paraméterei olvashatóak és állíthatóak be. Külön menüpontban állítható be, hogy a termosztát mikor és milyen hőmérsékleten kapcsoljon. Tétlenség esetén lekapcsoljuk a kijelzőt, hogy kijelzett feliratok ne égjenek a kijelzőbe.
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=120mm, keepaspectratio]{figures/state_diagram.pdf}
+    \caption{Állapot diagramm}
+    \label{fig:state_machine}
+\end{figure}
 
-Adatgyűjtés és kényelmi szempontok miatt az egység MQTT protkoll segítségével publikálja az éppen aktuális hőmérsékletet és Node-RED-ben megvalósított felület segítségvel a felhasználónak lehetősége van manuális felülírni a fűtésvezérlést. Az elkészített felület \ref{nodred-section} fejezetben lévő \ref{fig:nodered_ui}-es képen látható.
+Az alkalmazás alapját egy 4 állapottal rendelkező állapotgép biztosítja. Induláskor egy kezdőképernyő fogadja a felhasználót, amin az aktuális idő jelenik meg. Az enkóder rövid lenyomásával tudunk előre, a hosszú megnyomásával pedig visszafele lépkedni az állapotok között. A második állapotban egy menü jelenik meg, ahol az egységhez kapcsolt hőmérő, illetve RTC paraméterei menüpontok válaszhatóak ki és állíthatóak be. Külön menüpontban állítható be, hogy a termosztát mikor és milyen hőmérsékleten kapcsoljon. Tétlenség esetén lekapcsoljuk a kijelzőt, hogy kijelzett feliratok ne égjenek a kijelzőbe.
+
+Adatgyűjtés és kényelmi szempontok miatt az egység MQTT protkoll segítségével publikálja az éppen aktuális hőmérsékletet egy interneten található brooker segítségével és a Node-RED-ben megvalósított felület használatával van lehetősége a felhasználónak manuális beavatkozni a fűtésvezérlésbe. Az elkészített felület \ref{nodred-section} fejezetben lévő \ref{fig:nodered_ui}-es képen látható.

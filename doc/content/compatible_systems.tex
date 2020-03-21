@@ -2,13 +2,81 @@
 
 
 \section{Home Assistant}
+Az egyik legelterjedtebb nyílt forráskódú otthoni automatilázást biztosító rendszernek tekinthető. A rendszert ajánlott egy helyi hálózatra kötött számítógépen futtatni, ami általában egy Raspberry PI-t jelent.
+A rendszer YAML konfigurációs fájlokban tárolja a különböző konfigurációs beállításait. Automatizációs konfigurációk létrehozáshoz biztosít a rendszer egy felhasználói felületet, ahol tudja menedzselni a meglévő konfigurációkat, illetve újat is létre tud hozni a grafikus felület segítségével. 
+Az automatizálós fájlok 3 fő részből épül fel. Az első rész tartalmazza kezdeti eseményeket, amiknek a bekövetkezésére fogunk reagálunk. Ezt követik a különböző feltételek és végül a feltételek teljesülnek az utolsó részben lehet megadni, hogy milyen akciók hajtódjanak végre.
+
+Az alábbi konfiguráció az esős nap detektálása esetén felkapcsolja a világítást. \cite{homeassist:online}
+\begin{lstlisting}
+automation:
+  - alias: 'Rainy Day'
+    trigger:
+      - platform: state
+        entity_id: sensor.precip_intensity
+        to: 'rain'
+    condition:
+      - condition: state
+        entity_id: group.all_devices
+        state: 'home'
+      - condition: time
+        after: '14:00'
+        before: '23:00'
+    action:
+      service: light.turn_on
+      entity_id: light.couch_lamp
+\end{lstlisting}
+
+Mivel nyílt forráskódú rendszerről van szó, sokan használják és ezért számos kiegészítőt készítettek már hozzá. Egy ilyen kiegészítő például a példa konfiguráció során használt esőérzékelő szenzor, ami egy internetes API-t használ. Ide tartozik az MQTT szenzor, ami egy megadott topikra van feliratkozva, de a későbbiekben ismertetett ESPHome is.
+
 % https://www.home-assistant.io/
 
+\clearpage
+
 \section{ESPHome}
+Az ESPHOME egy egyedileg generálható firmware-t biztosít különböző beágyazott eszközök számára. A nevéből kiindulva a támogatott eszközökhöz tartoznak az alap ESP32 és ESP8266 fejlesztői panelek, de a Sonoff cég más eszközökkel is jól használható.
+A felhasználó egy konfigurációs fájl segítségével beállítja az adott alkalmazás által használt lábakat és az első fordítás során generálódik az egyedi firmware, ami már kábelen keresztül rá is tölthető az ESP-re. A konfig fájl későbbi módosítása során, már nem szükséges kábel használata, mivel az első fordításnál belekerül a kódba az OTA (Over The Air) firmware módosítási lehetőség is.
+
+Egy gomb használata esetén, amit a 16-os GPIO lábra kötünk, az alábbi konfigurációs fájl tartozik. \cite{esphome:online}
+
+\begin{lstlisting}
+    binary_sensor:
+        - platform: gpio
+            name: "Living Room Window"
+            pin:
+            number: 16
+            inverted: True
+            mode: INPUT_PULLUP
+\end{lstlisting}
+
+Számos ESPHome kiegészítő létezik a Home Assitant alkalamzáshoz, amikkel könnyed tudjuk integrálni az egységeket a már meglévő rendszerekhez. Létezik továbbá egy külön vezérlőpanel modul, amin keresztül könnyen megoldható a eszközök menedzselése a Home Assistanton keresztül is.
+
 % https://esphome.io/
 
-\section{Openhab}
-% https://ieeexplore.ieee.org/document/8603575}
 
+
+\section{Openhab}
+Az openHAB, a Home Assistant-hoz hasonlóan szintén egy nyílt forráskódú lakásautomatizálási rendszer. A használatához szükséges egy külön szerveren futtatni az alkalmazást, ami lehet az otthoni hálózat. Az openHUB szintén számos kiegészítő tartozik, hogy könnyen illeszthetőek legyen a meglévő eszközök.
+A haszálnathoz először létrekell hozni egy illesztő, amely biztosít egy interfészt a rendszerhez kapcsolt eszközünköz. Ezután definiáljuk az eszközünket. Majd az így definált eszközeket összekötjük tárgyal. A tárgyak a felhasználó felületen megjelenő elemek. Utolsó lépésben létrehozzuk a felhasználói felületet a tárgyak segítségével.
+A különböző feltételek és csatlakozások létrehozása történhet egy grafikus felületen keresztül. Az rendszerben haszált szabályok szintaxisa XBASE alapú. A következő példában a napkelte hatására aktiválódik a világítás.
+\begin{lstlisting}
+  rule "Start wake up light on sunrise"
+  when
+      Channel "astro:sun:home:rise#event" triggered
+  then
+      switch(receivedEvent.getEvent()) {
+          case "START": {
+              Light.sendCommand(ON)
+          }
+      }
+  end
+\end{lstlisting}
+% https://ieeexplore.ieee.org/document/8603575}
+\clearpage
 \section{IFTTT}
+Az IFTTT egy web alapú ingyenes szolgáltás, amelynek használta során különböző Appleteket tuduk létrehozni. Az Appleteket az általunk haszált különböző szolgáltatások alkotják. Ilyen szolgáltatás például a Gmail, Facebook, Twitter is. A felhasználó miután bejelentkezett a különböző szolgáltatásokba lehetősége van egyből számos kész Appletet használni.
+
+Egy ilyen kész Applet például Az android telefont némítja le, ha az általunk beállított alvási időszakban vagyunk. Ebben az esetben szükséges a telefonunkra az IFTTT saját alkalmazásának telepítése, amely segítségével értesítések beállítása is lehetséges. Saját Applet létrehozása is lehetséges, ha éppen nem találunk éppen az feladathoz megfelelőt. Ebben az esetben megkell adni, hogy egy kiválaszott szolgáltatás bizonyos eseményének bekövetkezése esetén, egy másik szolgáltatás miként reagáljon.
+
+A IFTTT felülete modern és könnyen használható, felhasználóbarát.A  különböző szabályok beállításához sem szükséges semmilyen programozási előismeret és néhány kattintással összekapcsolható két meglévő szolgáltatásunk
 % https://ifttt.com/
+

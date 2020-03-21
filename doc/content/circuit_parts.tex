@@ -29,6 +29,18 @@ Az mikrokontrollernek három különböző boot módja van. Az adott mód kivál
 \end{table}
 Az ESP lehetőséget biztosít, hogy vezetéknélkül is lehessen frissíteni a firmware-t OTA ( Over The Air) használatával. Ebben az esetben szükséges egy webszervert is használni, illetve figyelembe kell venni a különböző biztonsági kockázatokat.
 
+
+\subsection{I2C}
+Az ESP8266-nak alapértelmezetten egy I2C interfésze van, ami szoftveresen van megvalósítva. Erre az interfészre kapcsolódik a panelon elhelyezkedő kijelző, hőmérséklet szenzor, illetve shift regiszter. Lehetőség van ezenkívül további perifériák egyszerű csatlakoztatására is, mivel helyet kapott külön kivezetés tüskesorra is.
+
+A panelon elhelyezett hőmérséklet szenzor egy LM75-ös digitális hőmérő, aminek SOP8 tokozása van. Számos más hőmérséklet, illetve párataratalom mérő szenzor is használható a megegyező lábkiosztásnak köszönhetően.
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=130mm, keepaspectratio]{figures/i2c_devices.png}
+    \caption{Hőmérséklet szenzor, illetve I2C kivezetések}
+    \label{fig:i2c}
+\end{figure}
+\clearpage
 % alap lábbekötések
 % A modul programozása egy 6 pines csatlakozón (Rx,Tx,RTS,DTS,5V,GND) keresztül UART segítségével történik.
 \subsection{FET meghajtó áramkörök}
@@ -52,6 +64,14 @@ A P csatornás meghajtónál a kapcsolás egy másik N csatornás MOSFET segít�
     \label{fig:n_channel_mosfet}
 \end{figure}
 
+
+
+
+
+
+
+\subsection{Enkóder}
+Lehetőség van egy kapcsolóval egybeépített mechanikus enkóder bekötésére a panelon. Ennek a fő szerepe a kijelző által biztosított menürendszerben való navigálás. A kijelző hiánya esetében is több funkció rendelhető hozzá például a különböző kimenetek szabályzása. A beépített nyomógomb egy interrupt segítségével például beállítható, hogy visszakapcsoljon alvás üzemmódból a mikrokontroller.
 \subsection{Optokapu}
 2 db optokapunak lett hely kialakítva a panelon, amik például P-csatornás MOSFET meghajtóval kombinálva izolált vezérlést tesz lehetőve.
 
@@ -61,23 +81,7 @@ A P csatornás meghajtónál a kapcsolás egy másik N csatornás MOSFET segít�
     \caption{Optokapu}
     \label{fig:opto_gate}
 \end{figure}
-
-
-\subsection{I2C}
-Az ESP8266-nak alapértelmezetten egy I2C interfésze van, ami szoftveresen van megvalósítva. Erre az interfészre kapcsolódik a panelon elhelyezkedő kijelző, hőmérséklet szenzor, illetve shift regiszter. Lehetőség van ezenkívül további perifériák egyszerű csatlakoztatására is, mivel helyet kapott külön kivezetés tüskesorra is.
-
-A panelon elhelyezett hőmérséklet szenzor egy LM75-ös digitális hőmérő, aminek SOP8 tokozása van. Számos más hőmérséklet, illetve párataratalom mérő szenzor is használható a megegyező lábkiosztásnak köszönhetően.
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=130mm, keepaspectratio]{figures/i2c_devices.png}
-    \caption{Hőmérséklet szenzor, illetve I2C kivezetések}
-    \label{fig:i2c}
-\end{figure}
-
-
-\subsection{Enkóder}
-Lehetőség van egy kapcsolóval egybeépített mechanikus enkóder bekötésére a panelon. Ennek a fő szerepe a kijelző által biztosított menürendszerben való navigálás. A kijelző hiánya esetében is több funkció rendelhető hozzá például a különböző kimenetek szabályzása. A beépített nyomógomb egy interrupt segítségével például beállítható, hogy visszakapcsoljon alvás üzemmódból a mikrokontroller.
-
+\clearpage
 
 \subsection{Shift regiszterek}
 A mikrokontrollernek mivel viszonylag kevés szabad GPIO lába áll rendelkezésre, ezért lehetőség van a különböző shift regiszterek használatával növelni az elérhető bemenetek és kimenetek számát, ha az alkalmazáshoz szükséges. A panelon 2db 8 bit-es SPI interfészel, illetve egy 16 bit-es I2C-vel rendelkező shift regiszter helyezhető el. A 8 bitesek egyike párhuzamos bemeneteket alakít sorossá. A másik pedig soros bemenetet alakít át párhuzamos kimenetekké. 
@@ -136,6 +140,7 @@ Egyszerű számok, illetve időpontok kijelzésére elegendő lehet csak néhán
 \subsection{ADC}
 Az ESP8266 mikrokontrollernek csak egy darab lába képes analóg bemenetet olvasni. Az átalakítást egy 10 bites ADC végzi, aminek a bemeneti tartománya 0-10V-ig terjed. A bemenet átskálázását egy feszültségosztóval állítható be. Akkumlátoros tápellátás esetén például használható a bemeneti tápfeszültség mérésére.
 
+\clearpage
 \subsection{Tápellátás}
 A megvalósított eszköz tápellátására több lehetőség is biztosított. Egyrész található rajta egy szabványos tápcsatlakozó, ami rávan kötve egy 5V-os feszültségszabályozóra. Az alkatrészek méretezése és a szabályzó IC miatt a bemenetre 6.5V - 12V feszültség csatlakoztatható. A másik lehetőség egy micro USB-n keresztül 5V-os bemenet, illetve a programozón keresztül is lehetséges az áramkör táplálása. A bejövő feszültséget két darab lineáris feszültségszabályzó alakítja át. Az első 5V-ra majd ennek a kimenete rá van kötve egy 3,3V-ot előállítóra. A stabil feszültségek biztosítása érdekében szűrő kondenzátorok kerültek az IC-k ki és bemeneteire is. A további kiegészítő áramkörök egyszerű tápellátása érdekében a különböző tápfeszültségek több ponton is kilettek vezetve a NYÁK-on.
 

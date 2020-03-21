@@ -19,15 +19,15 @@
 % -Bevezetés átolvasása, általában egy jó áttekintése a témakörnek
 % -Ábrák átnézése
 % -Conclusion rész elolvasása
-% -Aki jobban el akar merülni benne, a többi rész is elolvasható
+% -Aki jobban el akar merülni benne, a többi rész is elolvashatóíy
 % -Ezek alapján néhány mondatos összefoglaló generálása
 
 \chapter{Szakirodalmi áttekintés}
 
-https://ieeexplore.ieee.org/document/8603575
 
+\section{Smart building based on IoT }
+A cikkben\cite{smartbuildingiot:article} a rendszer létrehozás során különböző típus szenzorokat helyeztek el mindegyeik szobában, amelyek segítségével monitorozni tudták a víz, illetve áramfogyasztásokat. Emelett külön lehetett detektálni, hogy vannak-e az egyes szobákba, illtve vezérelhető volt világítás is.
 
-Teljes fogyasztás: 98.2ma
-89.7
-14.04
-Sleep üzemmód: 17 ma
+A projekt célja a lakás biztonságának növelése és környezetbarátabbá tétele volt. Probléma esetén tud generálni a hatóságoknak egy egyedi képet, amin nincsennek személyes információk csak olyan alapvető paraméterek, hogy melyik szobában van a tűz.
+
+A hálózat legalsó részén találhatóak szobában elhelyezz ESP32 egységek, amelyek WiFi-vel kommunikálnak az egyel felettük lévő LoraWAN használatára képes LoPy eszközökkel. Ezek az eszközök továbbítják az adatokat egy felhőbe. A felhőben futő NodeRed segítségével pedig tudják gyűjteni az adatokat, illetve irányítani a szobában található egységeket.

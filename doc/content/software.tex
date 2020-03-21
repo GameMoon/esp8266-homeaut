@@ -2,6 +2,8 @@
 
 A szoftver az áramkörhöz hasonlóan több opcionálisan használható elemből épül fel. A felhasznalónak lehetősége egy konfigurációs fájlban megadnia, hogy mely elemeket szeretné használni. Ilyen beállítható érték például az ESPNOW hálózat, MQTT használata, de ide tartozik a kijelző és az enkóder jelenléte is. 
 
+A szoftverben a különböző nézet és mód váltásokat egy állapotgép segítségével valósítja meg. 
+
 Az ESPNOW hálózat használata egy olyan plusz lehetőséget biztosít, hogy több egység használata esetén automatikusan létrehozza és karbantartja a közöttük lévő a kapcsolatokat. A hálózat továbbá összekapcsolható már meglévő WiFi hozzáférési ponttal is. Hozzáférési ponthoz kapcsolódva lehetőség van más gyártó eszközeivel kommunikálni, illetve így lehet elérhetővé tenni az internet felé is a rendszert.
 
 Lehetőség van már meglévő rendszerek által biztosított szoftvereket is használni, ilyen például a ESPHome. Ezekben az esetekben általában egy konfig fájlban kell külön megadni, hogy melyik lábra milyen eszköz van csatlakoztatva.
@@ -56,9 +58,20 @@ Ilyen típusú üzenet segítségével lehet, az adott egységhez kapcsolt eszk�
 \subsubsection{TEST}
 A hálózat tesztelése érdekében használt csomag, amit az egységek visszaküldenek automatikusan a küldőnek.
 
-
+\clearpage
 \subsection{Hálózat}
+A hálózat tervezésénél és kialakításánál fontos szempont volt a már létező hasonló rendszerek áttanulmányázása és az ott már jó bevált módszerek alkalamazása. Ilyen meglévő rendszer például ESPMESH \cite{ESPMESH—29:online}, aminek az alapja szintén WiFi protokoll. A hálózat felépítés módja nagyjából megegyezik, de sokkal jobban tudják az egyes egységek menedzselni a további csatlakozásokat. Sajnos az ESPMESH csak ESP32-re lett tervezve és nem támogatja a ESP8266-ot.
+
+
 A hálózatban két különböző típusú csomópontot lehet megkülönböztetni. Az egyik a gyökér csomópont, illetve a normál csomópont. Mind a két típusú egység rendelkezik egy beállítható szülő flag-el, ami ha igaz értékre van állítva, akkor válaszolhat az újonnan érkező kapcsolódni kívánó egységeknek.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=150mm, keepaspectratio]{figures/mesh.png}
+    \caption{A hálózat felépítése \cite{ESPMESH—29:online} }
+    \label{fig:mesh_network}
+\end{figure}
+
 
 \subsubsection{Gyökér csomópont}
 A hálózat felépítése ezek segítségével kezdődik. Ilyen egység akkor keletkezik, ha az adott csomópont többszöri REQUEST\_PARENT üzenet küldése után sem kap választ. Ebben az esetben kinevezi magát kezdő csomópontnak és beállítja szülő flag-et, ezzel is jelezve, hogy hozzá már lehet kapcsolódni. Ezeknek a csomópontoknak olyan további különleges tulajdonságuk is van, hogy ők tudnak kommunikálni a külvilággal, feltéve ha a konfigurációs fájlban engedélyezve van az MQTT használata. Az ide beérkező STATUS üzeneteket átalakítják MQTT-ben használt topikokká majd ezeket publikálják. Az általuk publikát topikokra fel is vannak iratkozva, ezért módosítás esetén ők alakítják vissza a Broker-től érkező infromációkat UPDATE üzenetekké majd továbbítják hálózatukon.
@@ -66,12 +79,6 @@ A hálózat felépítése ezek segítségével kezdődik. Ilyen egység akkor ke
 \subsubsection{Normál csomópont}
 A normál csomópont akkor keletkezik, ha egy egység sikeresen rákapcsolódik egy a gyökér vagy egy másik csomópontra, ami szülőként is funkciónal. Sikeres kapcsolódás után engedélyezheti, hogy ő rá is lehessen kapcsolódni.
 
-\begin{figure}[!ht]
-    \centering
-    \includegraphics[width=150mm, keepaspectratio]{figures/mesh.png}
-    \caption{A hálózat felépítése  }
-    \label{fig:mesh_network}
-\end{figure}
 
 
 A hálózat felépítése során fontos, hogy egy csomópontra csak akkor lehessen csatlakozni, ha már ő is csatlakoztatva van valakihez ( kivétel a gyökér egység ). Ellenkező esetben létre jöhet olyan hálozat, ami nem tud a külvilággal kommunikálni. A másik fontos tulajdonság, hogy egy egységnek csak egy szülője lehet, hogy ne alaklujanak ki hurkok, ahol az üzenetek végtelenségig keringenének. Az utóbbi esetet egyébként egy plusz TTL paraméter bevezetésével kilehetne küszöbölni. A feltételek betartása esetében a hálózatnak végül egy fa struktúrája lesz.

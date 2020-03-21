@@ -17,7 +17,7 @@ Az egységek alapja egy az Espressif cég által gyártott mikrokontroller, amel
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=150mm, keepaspectratio]{figures/esp8266funcdiag.png}
-    \caption{Az ESP8266 funkcionális diagramja}
+    \caption{Az ESP8266 funkcionális diagramja \cite{esp8266:online} }
     \label{fig:TeXstudio}
 \end{figure}
 
@@ -62,8 +62,9 @@ Az ESPNOW által küldött üzenet a SoftAP interfészén keresztül történik,
 
 % https://cr.yp.to/chacha/chacha-20080128.pdf
 % https://cr.yp.to/snuffle/salsafamily-20071225.pdf
-\section{ChaCha}
-A titkosítás egy 256 bites kulcson alapul és alapvetően a Salsa20-as algoritmus egy tovább fejlesztett változata. Mind a két algoritmus szimmetrikus kulcsot használ és folyamatosan rejtjeleznek, nem blokkonként. Az említett algoritmusok egyik nagy előnye, hogy csak három művelet ismételődik. Ezek a műveletek az összeadás, kizáró vagy és az elforgatás. A bemenetek 32 bites számoknak tekinthetőek. A titkosítás alapja egy 4x4-es mátrix, aminek elemei a 32 bites értékek. A mátrixot a 4 db bemeneti adat, 8db kulcsérték, 2 db számláló és 2db noonce érték alkotja.
+\clearpage
+\section{ChaCha\cite{chacha2051:online}}
+A titkosítás egy 256 bites kulcson alapul és alapvetően a Salsa20-as\cite{salsafam18:online} algoritmus egy tovább fejlesztett változata. Mind a két algoritmus szimmetrikus kulcsot használ és folyamatosan rejtjeleznek, nem blokkonként. Az említett algoritmusok egyik nagy előnye, hogy csak három művelet ismételődik. Ezek a műveletek az összeadás, kizáró vagy és az elforgatás. A bemenetek 32 bites számoknak tekinthetőek. A titkosítás alapja egy 4x4-es mátrix, aminek elemei a 32 bites értékek. A mátrixot a 4 db bemeneti adat, 8db kulcsérték, 2 db számláló és 2db noonce érték alkotja.
 
 \begin{table}[h]
 	\footnotesize
@@ -86,7 +87,7 @@ Az MQTT publikáló-feliratkozó modell alapján működik. A klienseknek lehet�
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=130mm, keepaspectratio]{figures/mqtt.png}
-    \caption{MQTT protokoll működése  \cite{MQTTS—Ap4:online} }
+    \caption{MQTT protokoll működése  \cite{MQTT:article} }
     \label{fig:mqtt}
 \end{figure}
 
@@ -112,6 +113,7 @@ Az eszököz kommunikációja TCP/IP felett zajlik. A protokollban használt cso
 
 Az MQTT protokoll könnyű implementálhatósága miatt, az alacsony hálózati forgaloma és közel valósidejűsége miatt ideális választos különböző IoT-s rendszerek használatlánál. Egyedül a bróker futtatáshoz lehet szükséges nagyobb kapacitás, de számos cég biztosít lehetőséget ilyen szolgáltatások előfizetésére. Egy otthoni rendszer esetében elegenedő lehet például egy Raspberry PI-n futó szerver használata is. Az otthoni szerver használatának további előnye, hogy biztonságosabb rendszer hozható létre, mivel nem jutnak ki a szenzor információk az internetre.
 
+\clearpage
 \section{Node-RED} \label{nodred-section}
 A Node-RED egy olyan programozási felület, amely segítségével könnyedén összelehet kapcsolni különböző internetes szolgáltatásokat, hardveres eszközöket. A felület futattásához szükséges egy szerver, ami lehet például egy lokálisan elhelyezett Raspberry PI-n. Egy másik lehetséges megoldás a különböző cégek által biztosított felhőalap rendszerekben történő futtatás.
 
